@@ -16,17 +16,42 @@ import numpy as np
 def brighten(image, factor):
     # when we brighten, we just want to make each channel higher by some amount 
     # factor is a value > 0, how much you want to brighten the image by (< 1 = darken, > 1 = brighten)
-    pass
+    x_pixels, y_pixels, num_channels = image.array.shape
+    new_im = Image(x_pixels=x_pixels, y_pixels=y_pixels, num_channels=num_channels) #make a new image with the same width as the original image
+    for x in range(x_pixels):
+        for y in range(y_pixels):
+            for c in range(num_channels):
+                new_im.array[x, y, c] = image.array[x, y, c] * factor
+    return new_im
 
 def adjust_contrast(image, factor, mid):
     # adjust the contrast by increasing the difference from the user-defined midpoint by factor amount
-    pass
+    x_pixels, y_pixels, num_channels = image.array.shape
+    new_im = Image(x_pixels=x_pixels, y_pixels=y_pixels, num_channels=num_channels) #make a new image with the same width as the original image
+    for x in range(x_pixels):
+        for y in range(y_pixels):
+            for c in range(num_channels):
+                new_im.array[x, y, c] = (image.array[x, y, c] - mid) * factor + mid
+    return new_im
 
 def blur(image, kernel_size):
     # kernel size is the number of pixels to take into account when applying the blur
     # (ie kernel_size = 3 would be neighbors to the left/right, top/bottom, and diagonals)
     # kernel size should always be an *odd* number
-    pass
+    x_pixels, y_pixels, num_channels = image.array.shape
+    new_im  = Image(x_pixels=x_pixels, y_pixels=y_pixels, num_channels=num_channels)
+
+    neighbor_range = kernel_size // 2
+
+    for x in range(x_pixels):
+        for y in range(y_pixels):
+            for c in range(num_channels):
+                total = 0
+                for x_i in range (x-neighbor_range, x+neighbor_range+1):
+                    for y_i in range(max(0,y-neighbor_range), min(y_pixels-1, y+neighbor_range) + 1)
+                        total += image.array[x_i, y_i, c]
+                new_im.array
+
 
 def apply_kernel(image, kernel):
     # the kernel should be a 2D array that represents the kernel we'll use!
@@ -45,4 +70,9 @@ def combine_images(image1, image2):
 if __name__ == '__main__':
     lake = Image(filename='lake.png')
     city = Image(filename='city.png')
+    # let's lighten the lake!
+    brightened_im = brighten(lake, 1.7)
+    brightened_im.write_image("brightened_lake.png")
 
+    darkened_im = brighten(lake, 0.5)
+    darkened_im.write_image("darkened_lake.png")
